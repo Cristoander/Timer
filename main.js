@@ -1,30 +1,43 @@
-let tempo = new Date()
+function relogio() {
+  function criaHoraDosSegundos(segundos) {
+    const data = new Date(segundos * 1000);
+    return data.toLocaleTimeString('pt-BR', {
+      hour12: false,
+      timeZone: 'UTC'
+    });
+  }
 
-tempo.setHours(0);
-tempo.setMinutes(0);
-tempo.setSeconds(0);
-let tempoTexto = tempo.toLocaleTimeString()
-document.getElementById('createTimer').innerHTML = tempoTexto
+  const relogio = document.querySelector('.relogio');
+  let segundos = 0;
+  let timer;
 
+  function iniciaRelogio() {
+    timer = setInterval(function() {
+      segundos++;
+      relogio.innerHTML = criaHoraDosSegundos(segundos);
+    }, 1000);
+  }
 
-function playTimer(){
-    timer = setInterval(function(){
-        tempo.setSeconds(tempo.getSeconds() + 1)
-        tempoTexto = tempo.toLocaleTimeString()
-        document.getElementById('createTimer').innerHTML = tempoTexto
-        
-}, 1000);
+  document.addEventListener('click', function(e) {
+    const el = e.target;
+
+    if (el.classList.contains('zerar')) {
+      clearInterval(timer);
+      relogio.innerHTML = '00:00:00';
+      relogio.classList.remove('pausado');
+      segundos = 0;
+    }
+
+    if (el.classList.contains('iniciar')) {
+      relogio.classList.remove('pausado');
+      clearInterval(timer);
+      iniciaRelogio();
+    }
+
+    if (el.classList.contains('pausar')) {
+      clearInterval(timer);
+      relogio.classList.add('pausado');
+    }
+  });
 }
-
-function pauseTime(){
-    clearInterval(timer);
-}
-
-
-function zeroTimer(){
-    clearInterval(timer);
-    tempo.setSeconds(0);
-    tempoTexto = tempo.toLocaleTimeString()
-    document.getElementById('createTimer').innerHTML = tempoTexto
-}
-
+relogio();
